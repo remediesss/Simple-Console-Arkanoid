@@ -1,7 +1,7 @@
 #include "ball.h"
 
-extern char mas[][200 + 1]; // Assuming 'mas' is declared in another file
-extern TBall ball; // Assuming 'ball' is declared in another file
+extern char mas[][200 + 1];
+extern TBall ball;
 
 void putBall() {
 	mas[ball.iy][ball.ix] = '*';
