@@ -22,7 +22,7 @@ typedef struct {
 
 typedef struct {
 	int x, y;
-	int w; // ширина ракетки
+	int w; // ГёГЁГ°ГЁГ­Г  Г°Г ГЄГҐГІГЄГЁ
 } Tracket;
 
 
@@ -45,31 +45,28 @@ void autoMoveBall() {
 	TBall bl = ball;
 	float deltaX, deltaY;
 	
-	/*Эта вставка использует инструкции FPU для вычисления синуса и косинуса угла alfa, а затем умножает результаты на скорость мяча,
-    чтобы получить изменения по осям X и Y.После выполнения ассемблерного кода, новые значения deltaX и deltaY используются для обновления позиции мяча.*/
+
 	__asm {
-		fld ball.alfa       // Загружаем угол alfa
-		fsincos             // Вычисляем sin(alfa) и cos(alfa)
-							// ST(0) = cos(alfa), ST(1) = sin(alfa)
-		fmul ball.speed     // Умножаем cos(alfa) на speed
-		fstp deltaX         // Сохраняем результат в deltaX и выталкиваем из стека
-		fmul ball.speed     // Умножаем sin(alfa) на speed (который теперь находится на вершине стека)
-		fstp deltaY         // Сохраняем результат в deltaY
+		fld ball.alfa      
+		fsincos            				
+		fmul ball.speed     
+		fstp deltaX         
+		fmul ball.speed     
+		fstp deltaY         
 	}
 	moveBall(ball.x + deltaX, ball.y - deltaY);
 
-	// Увеличение скорости мяча каждые 5 попаданий
 	if (hitCnt % 10 == 0 && hitCnt != 0) {
 		ball.speed += 0.01;
 	}
 
 	if ((mas[ball.iy][ball.ix] == '#') || (mas[ball.iy][ball.ix] == '@')) {
-		if ((ball.ix != bl.ix) && (ball.iy != bl.iy)) { // сравнение нового положения со старым bl - старое
+		if ((ball.ix != bl.ix) && (ball.iy != bl.iy)) { 
 			if (mas[bl.iy][bl.ix] == mas[ball.iy][ball.ix]) {
-				bl.alfa = bl.alfa + M_PI; // инвертируем направление
+				bl.alfa = bl.alfa + M_PI; 
 			}
 			else {
-				if (mas[bl.iy][ball.ix] == '#') { // если старый у и новый х - стена, то вертикальная поверхность
+				if (mas[bl.iy][ball.ix] == '#') { 
 					bl.alfa = (2 * M_PI - bl.alfa) + M_PI;
 				}
 				else {
@@ -78,10 +75,10 @@ void autoMoveBall() {
 			}
 		}
 		else if (ball.iy == bl.iy) {
-			bl.alfa = (2 * M_PI - bl.alfa) + M_PI; // отражение по вертикали
+			bl.alfa = (2 * M_PI - bl.alfa) + M_PI; 
 		}
 		else {
-			bl.alfa = (2 * M_PI - bl.alfa); // отражение по горизонтали
+			bl.alfa = (2 * M_PI - bl.alfa); 
 		}
 		ball = bl;
 
@@ -91,7 +88,6 @@ void autoMoveBall() {
 		for (int row = 0; row < num_rows; ++row) {
 			for (int i = 0; i < num_blocks; ++i) {
 				if (blocks[row * num_blocks + i].exist) {
-					// Проверка столкновения мячика с блоком
 					if (ball.iy == blocks[row * num_blocks + i].y && ball.ix >= blocks[row * num_blocks + i].x && ball.ix < blocks[row * num_blocks + i].x + 6) {
 						blocks[row * num_blocks + i].exist = false;
 						hitCnt++;
@@ -132,10 +128,8 @@ void putBlocks() {
 	for (int row = 0; row < num_rows; ++row) {
 		for (int i = 0; i < num_blocks; ++i) {
 			if (blocks[row * num_blocks + i].exist) {
-				// Проверка, чтобы блок не выходил за верхнюю границу
 				if (blocks[row * num_blocks + i].y >= 1) {
 					for (int j = blocks[row * num_blocks + i].x; j < blocks[row * num_blocks + i].x + 6; ++j) {
-						// Проверка, чтобы блок не выходил за боковые границы
 						if (j >= 1 && j < width - 1) {
 							mas[blocks[row * num_blocks + i].y][j] = '=';
 						}
@@ -214,22 +208,22 @@ void setCur(int x, int y)
 void greeting()
 {
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-	printf("\t\t\t\t\t\t\t\t  ¶¶¶¶   ¶¶¶¶  ¶¶  ¶¶  ¶¶¶¶   ¶¶¶¶  ¶¶     ¶¶¶¶¶     ¶¶¶¶  ¶¶¶¶¶   ¶¶¶¶   ¶¶¶¶  ¶¶  ¶¶  ¶¶¶¶  ¶¶¶¶¶¶ ¶¶¶¶¶ \t\t\t\n");
-	printf("\t\t\t\t\t\t\t\t ¶¶  ¶¶ ¶¶  ¶¶ ¶¶¶ ¶¶ ¶¶     ¶¶  ¶¶ ¶¶     ¶¶       ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶ ¶¶¶ ¶¶ ¶¶  ¶¶   ¶¶   ¶¶  ¶¶\t\t\t\n");
-	printf("\t\t\t\t\t\t\t\t ¶¶     ¶¶  ¶¶ ¶¶ ¶¶¶  ¶¶¶¶  ¶¶  ¶¶ ¶¶     ¶¶¶¶     ¶¶¶¶¶¶ ¶¶¶¶¶  ¶¶     ¶¶¶¶¶¶ ¶¶ ¶¶¶ ¶¶  ¶¶   ¶¶   ¶¶  ¶¶\t\t\t\n");
-	printf("\t\t\t\t\t\t\t\t ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶     ¶¶ ¶¶  ¶¶ ¶¶     ¶¶       ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶ ¶¶  ¶¶   ¶¶   ¶¶  ¶¶\t\t\t\n");
-	printf("\t\t\t\t\t\t\t\t  ¶¶¶¶   ¶¶¶¶  ¶¶  ¶¶  ¶¶¶¶   ¶¶¶¶  ¶¶¶¶¶¶ ¶¶¶¶¶    ¶¶  ¶¶ ¶¶  ¶¶  ¶¶¶¶  ¶¶  ¶¶ ¶¶  ¶¶  ¶¶¶¶  ¶¶¶¶¶¶ ¶¶¶¶¶ \t\t\t\n");
+	printf("\t\t\t\t\t\t\t\t  В¶В¶В¶В¶   В¶В¶В¶В¶  В¶В¶  В¶В¶  В¶В¶В¶В¶   В¶В¶В¶В¶  В¶В¶     В¶В¶В¶В¶В¶     В¶В¶В¶В¶  В¶В¶В¶В¶В¶   В¶В¶В¶В¶   В¶В¶В¶В¶  В¶В¶  В¶В¶  В¶В¶В¶В¶  В¶В¶В¶В¶В¶В¶ В¶В¶В¶В¶В¶ \t\t\t\n");
+	printf("\t\t\t\t\t\t\t\t В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶В¶ В¶В¶ В¶В¶     В¶В¶  В¶В¶ В¶В¶     В¶В¶       В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶В¶ В¶В¶ В¶В¶  В¶В¶   В¶В¶   В¶В¶  В¶В¶\t\t\t\n");
+	printf("\t\t\t\t\t\t\t\t В¶В¶     В¶В¶  В¶В¶ В¶В¶ В¶В¶В¶  В¶В¶В¶В¶  В¶В¶  В¶В¶ В¶В¶     В¶В¶В¶В¶     В¶В¶В¶В¶В¶В¶ В¶В¶В¶В¶В¶  В¶В¶     В¶В¶В¶В¶В¶В¶ В¶В¶ В¶В¶В¶ В¶В¶  В¶В¶   В¶В¶   В¶В¶  В¶В¶\t\t\t\n");
+	printf("\t\t\t\t\t\t\t\t В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶     В¶В¶ В¶В¶  В¶В¶ В¶В¶     В¶В¶       В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶ В¶В¶  В¶В¶   В¶В¶   В¶В¶  В¶В¶\t\t\t\n");
+	printf("\t\t\t\t\t\t\t\t  В¶В¶В¶В¶   В¶В¶В¶В¶  В¶В¶  В¶В¶  В¶В¶В¶В¶   В¶В¶В¶В¶  В¶В¶В¶В¶В¶В¶ В¶В¶В¶В¶В¶    В¶В¶  В¶В¶ В¶В¶  В¶В¶  В¶В¶В¶В¶  В¶В¶  В¶В¶ В¶В¶  В¶В¶  В¶В¶В¶В¶  В¶В¶В¶В¶В¶В¶ В¶В¶В¶В¶В¶ \t\t\t\n");
 }
 
 int compareScores(const void* a, const void* b) {
 	HighScore* scoreA = (HighScore*)a;
 	HighScore* scoreB = (HighScore*)b;
-	return scoreB->score - scoreA->score; // Сортировка по убыванию
+	return scoreB->score - scoreA->score; 
 }
 
 void displayHighScores() {
 	FILE* file = fopen("high_scores.txt", "r");
-	HighScore scores[1000]; // Предполагаем, что у нас не более 1000 записей
+	HighScore scores[1000]; 
 	int count = 0;
 
 	if (file) {
@@ -298,21 +292,21 @@ int main() {
 			}
 			if (ball.iy > height)
 			{
-				lives--; // Уменьшаем количество жизней
+				lives--; 
 				if (lives > 0) {
-					run = false; // Останавливаем мячик
-					moveBall(racket.x + racket.w / 2, racket.y - 1); // Позиционируем мячик по центру ракетки
+					run = false; 
+					moveBall(racket.x + racket.w / 2, racket.y - 1);
 					
 				}
 				else {
 					printf("Game Over!\n");
-					break; // Выходим из цикла, если жизни закончились
+					break;
 				}
 				hitCnt = 0;
 			}
 			else if (hitCnt > maxHitCnt)
 			{
-				maxHitCnt = hitCnt; // Обновляем maxHitCnt только если hitCnt больше
+				maxHitCnt = hitCnt;
 			}
 
 			init();
