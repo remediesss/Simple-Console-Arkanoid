@@ -1,7 +1,3 @@
-fadda 0
-ë  0
-¢ë«  2752561
-flusha 0
-¢äë  7
-meth 7
-gamer1 1
+gamer1 99
+gamer 2 88
+gamer 3 77
